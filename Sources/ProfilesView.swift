@@ -75,7 +75,7 @@ struct ProfilesView: View {
         case .needMore:
             Label("Pick at least two profiles.", systemImage: "info.circle").foregroundStyle(.secondary)
         case .firmwareTwoAdjacent:
-            Label("Handled by the mouse: the button is “Profile up” in profile \(model.prefs.cycleSet[0] + 1) and “Profile down” in profile \(model.prefs.cycleSet[1] + 1). Works everywhere, PC included.", systemImage: "checkmark.seal")
+            Label("Handled by the mouse: the button is “Profile up” in profile \(model.prefs.cycleSet[0] + 1) and “Profile down” in profile \(model.prefs.cycleSet[1] + 1); in the other profiles it steps back towards these two. Works everywhere, PC included.", systemImage: "checkmark.seal")
                 .foregroundStyle(.green)
         case .firmwareAll:
             Label("Handled by the mouse with “Profile cycle” in every profile. Works everywhere.", systemImage: "checkmark.seal")

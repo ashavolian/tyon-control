@@ -48,7 +48,7 @@ struct ButtonsView: View {
                         }
                     }
                     Section {
-                        Text("Easy-Shift[+] is the function that turns the second layer on while held; by default it sits on the thumb pedal. Macros can't be edited here, but existing ones are kept as they are.")
+                        Text("Easy-Shift[+] is the function that turns the second layer on while held; by default it sits on the thumb pedal. Macros can't be edited here, but existing ones are kept as they are. “Profile cycle” steps through all five profiles; to toggle between two, set up the switch button in the Profiles tab instead.")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 }

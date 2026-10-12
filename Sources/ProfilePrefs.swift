@@ -49,8 +49,15 @@ struct ProfilePrefs: Codable, Equatable {
         case .needMore:
             return [:]
         case .firmwareTwoAdjacent:
-            return [cycleSet[0]: ButtonAssignment(type: ButtonFunction.profileUp, modifier: 0, key: 0),
-                    cycleSet[1]: ButtonAssignment(type: ButtonFunction.profileDown, modifier: 0, key: 0)]
+            // Inside the pair the button toggles; from any other profile it steps back towards the pair,
+            // so a stray profile switch can always be undone with the same button.
+            let lo = cycleSet[0], hi = cycleSet[1]
+            var map: [Int: ButtonAssignment] = [:]
+            for p in 0..<Tyon.profileCount {
+                let type: UInt8 = p <= lo ? ButtonFunction.profileUp : ButtonFunction.profileDown
+                map[p] = ButtonAssignment(type: p == lo ? ButtonFunction.profileUp : (p == hi ? ButtonFunction.profileDown : type), modifier: 0, key: 0)
+            }
+            return map
         case .firmwareAll:
             return Dictionary(uniqueKeysWithValues: (0..<Tyon.profileCount).map { ($0, ButtonAssignment(type: ButtonFunction.profileCycle, modifier: 0, key: 0)) })
         case .software:

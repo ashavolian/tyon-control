@@ -10,7 +10,8 @@ do {
     print("active profile: \(try dev.readActiveProfile() + 1)")
     for p in 0..<Tyon.profileCount {
         let b = try dev.readProfileButtons(p)
-        print("profile \(p + 1): wheel up=0x\(String(b.buttons[14].type, radix: 16)) (\(ButtonFunction.describe(b.buttons[14].type)))  wheel down=0x\(String(b.buttons[15].type, radix: 16)) (\(ButtonFunction.describe(b.buttons[15].type)))  wheel click=0x\(String(b.buttons[2].type, radix: 16))")
+        let show = [8, 10, 5, 26].map { "\($0 + 1 <= 16 ? "#\($0 + 1)" : "shift#\($0 - 15)") \(TyonButton.slotName($0))=0x\(String(b.buttons[$0].type, radix: 16)) (\(ButtonFunction.describe(b.buttons[$0].type)))" }
+        print("profile \(p + 1): " + show.joined(separator: " | "))
     }
 } catch { print("ERROR:", error.localizedDescription) }
 transport.stop()
