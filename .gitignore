@@ -1,0 +1,12 @@
+# build output, snapshots, logs
+build/
+
+# local code-signing material (private key!) – never commit
+Signing/
+*.p12
+*.pem
+
+# the mouse photo used for the button map is not redistributable – add your own as Resources/tyon.png
+Resources/tyon.png
+
+.DS_Store
