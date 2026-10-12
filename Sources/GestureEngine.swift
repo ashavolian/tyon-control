@@ -25,6 +25,8 @@ struct GestureConfig: Codable, Equatable {
     var freezePointer = true
     var swipeThreshold: Double = 80               // pixels of movement that count as a swipe
     var macProfile: Int? = nil                    // profile that gets the firmware mapping (nil = pick automatically)
+    var reverseMouseScroll = false                // software scroll reversal for the mouse wheel only (Mac)
+    var reverseMouseScrollHorizontal = true
 
     private static let defaultsKey = "TyonControl.gestureConfig"
 
@@ -54,7 +56,20 @@ struct GestureConfig: Codable, Equatable {
 
 final class GestureEngine: ObservableObject {
     @Published var config: GestureConfig {
-        didSet { if config != oldValue { config.save() } }
+        didSet {
+            if config != oldValue {
+                config.save()
+                syncScrollReverser()
+            }
+        }
+    }
+
+    let scrollReverser = ScrollReverser()
+
+    /// Applies the scroll-reversal setting; also called periodically so it kicks in once Accessibility is granted.
+    func syncScrollReverser() {
+        scrollReverser.horizontal = config.reverseMouseScrollHorizontal
+        scrollReverser.enabled = config.enabled && config.reverseMouseScroll
     }
     @Published private(set) var lastEvent = "No button events received yet"
     @Published private(set) var lastEventSlot: Int?
@@ -85,6 +100,7 @@ final class GestureEngine: ObservableObject {
 
     init() {
         config = GestureConfig.load()
+        syncScrollReverser()
     }
 
     deinit { unfreezePointer() }

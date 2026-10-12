@@ -7,12 +7,10 @@ if !transport.isConnected { _ = connected.wait(timeout: .now() + 3) }
 guard transport.isConnected else { print("not connected"); exit(1) }
 let dev = TyonDevice(transport: transport)
 do {
-    let active = try dev.readActiveProfile()
-    print("active profile: \(active + 1)")
-    for p in 0..<2 {
+    print("active profile: \(try dev.readActiveProfile() + 1)")
+    for p in 0..<Tyon.profileCount {
         let b = try dev.readProfileButtons(p)
-        let interesting = [3, 4, 5, 6, 7, 8, 12, 13]
-        print("profile \(p + 1): " + interesting.map { "\(TyonButton.slotName($0))=0x\(String(b.buttons[$0].type, radix: 16))" }.joined(separator: "  "))
+        print("profile \(p + 1): wheel up=0x\(String(b.buttons[14].type, radix: 16)) (\(ButtonFunction.describe(b.buttons[14].type)))  wheel down=0x\(String(b.buttons[15].type, radix: 16)) (\(ButtonFunction.describe(b.buttons[15].type)))  wheel click=0x\(String(b.buttons[2].type, radix: 16))")
     }
 } catch { print("ERROR:", error.localizedDescription) }
 transport.stop()

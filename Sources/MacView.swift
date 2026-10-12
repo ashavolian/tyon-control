@@ -140,6 +140,19 @@ struct MacSettingsForm: View {
                 Text("How actions are triggered")
             }
 
+            Section {
+                Toggle("Reverse scroll direction for the mouse wheel (trackpad unaffected)", isOn: $engine.config.reverseMouseScroll)
+                Toggle("Also reverse horizontal scrolling", isOn: $engine.config.reverseMouseScrollHorizontal)
+                    .disabled(!engine.config.reverseMouseScroll)
+                if engine.config.reverseMouseScroll && !accessibility {
+                    Text("Needs Accessibility access.").font(.caption).foregroundStyle(.orange)
+                }
+                Text("macOS has one scroll-direction setting for mice and trackpads together. This flips only line-based wheel scrolling, while this app is running. The mouse itself can do it too, everywhere: swap “Wheel up” and “Wheel down” in the Buttons tab of the profile you use on the Mac.")
+                    .font(.caption).foregroundStyle(.secondary)
+            } header: {
+                Text("Scrolling")
+            }
+
             Section("Live test") {
                 LabeledContent("Last button event", value: engine.lastEvent)
                 LabeledContent("Last action", value: engine.lastGesture)
@@ -179,6 +192,7 @@ struct MacSettingsForm: View {
         .onReceive(tick) { _ in
             accessibility = Accessibility.granted
             launchAtLogin = SMAppService.mainApp.status == .enabled
+            engine.syncScrollReverser()
         }
     }
 

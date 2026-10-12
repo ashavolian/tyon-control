@@ -274,6 +274,7 @@ final class AppModel: ObservableObject {
     /// Called when the app quits: never leave the pointer frozen.
     func shutdown() {
         gestures.unfreezePointer()
+        gestures.scrollReverser.shutdown()
     }
 
     // MARK: Writing
@@ -327,7 +328,11 @@ final class AppModel: ObservableObject {
                 self.errorMessage = failure
             } else {
                 let list = outcome.written.map { String($0.0 + 1) }.joined(separator: ", ")
-                self.status = "Saved profile\(outcome.written.count == 1 ? "" : "s") \(list) to mouse"
+                var msg = "Saved profile\(outcome.written.count == 1 ? "" : "s") \(list) to mouse"
+                if !outcome.written.contains(where: { $0.0 == self.activeProfile }) {
+                    msg += " – not the active profile; the mouse is on profile \(self.activeProfile + 1)"
+                }
+                self.status = msg
             }
         }
     }
